@@ -10,6 +10,7 @@ class Game extends React.Component {
             cells: [],
         }
         this.CreateCells = this.CreateCells.bind(this);
+        this.RenderRows = this.RenderRows.bind(this);
     }
 
     componentWillMount() {
@@ -24,14 +25,14 @@ class Game extends React.Component {
         }
     }
 
-    RenderRows() {
+    RenderRows() {        
         for(let row=1; row<=this.state.rows; row++) {
+            let rowCells = this.state.cells.filter(cell => cell.y === row)
             return (                
-                <Row cells={this.state.cells} id={row}/>
+                <Row rowCells={rowCells} id={row}/>
             )
         }
     }
-
 
 
     render() {
