@@ -12,6 +12,8 @@ class Game extends React.Component {
         }
         this.CreateCells = this.CreateCells.bind(this);
         this.changeState = this.changeState.bind(this);
+        this.setRows = this.setRows.bind(this);
+        this.setColumns = this.setColumns.bind(this);
         //this.RenderRows = this.RenderRows.bind(this);
     }
 
@@ -49,6 +51,14 @@ class Game extends React.Component {
             return board;
         }
 
+    setRows(event) {
+        this.setState({rows: event.target.value});
+    }
+
+    setColumns(event) {
+        this.setState({columns: event.target.value});
+    }
+
     // RenderRows() {
     //     for(let row=1; row<=this.state.rows; row++) {
     //         let rowCells = this.state.cells.filter(cell => cell.y === row)
@@ -63,6 +73,12 @@ class Game extends React.Component {
             <table className="Board">
                 {this.renderBoard()}
             </table>
+            <form>
+                <label for="rows">Rows:</label>
+                <input type="text" id="rows" onChange={this.setRows}/>
+                <label for="columns">Columns</label>
+                <input type="text" id="columns" onChange={this.setColumns}/>
+            </form>
         </div>
         );
     }
