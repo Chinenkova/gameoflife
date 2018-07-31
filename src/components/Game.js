@@ -1,6 +1,5 @@
 import React from 'react';
 import './Game.css';
-//import Row from './Row';
 import Cell from './Cell';
 class Game extends React.Component {
     constructor() {
@@ -14,7 +13,6 @@ class Game extends React.Component {
         this.changeState = this.changeState.bind(this);
         this.setRows = this.setRows.bind(this);
         this.setColumns = this.setColumns.bind(this);
-        //this.RenderRows = this.RenderRows.bind(this);
     }
 
     componentWillMount() {
@@ -30,26 +28,37 @@ class Game extends React.Component {
         }
     }
 
-    changeState() {
+    changeState(index) {
+        let cells = {...this.state.cells[index].alive}
+        someProperty.flag = true;
+        this.setState({someProperty})
         this.setState(prevState => ({
-            alive: !prevState.alive
+            cell.alive: !prevState.cells.alive
         }));
     }
 
     renderBoard = () => {
-        let board = []    
-        // Outer loop to create parent
+        // let board = [];    
+        // for (let row = 1; row <= this.state.rows; row++) {
+        //     let children = [];
+        //     for (let c = 1; c <= this.state.columns; c++) {
+        //         children.push(<Cell x={c} y={row} alive={false} changeState={this.changeState}/>)
+        //     }
+        //     board.push(<tr>{children}</tr>)
+        // }
+        //     return board;
+
+        const array = [];
         for (let row = 1; row <= this.state.rows; row++) {
-            let children = []
-            //Inner loop to create children
-            for (let c = 1; c <= this.state.columns; c++) {
-                children.push(<Cell x={c} y={row} changeState={this.changeState}/>)
-            }
-            //Create the parent and add the children
-            board.push(<tr>{children}</tr>)
+            let rowCells = this.state.cells.filter(cell => cell.y===row);
+            array.push(<tr>
+            {rowCells.map(cell => {
+                return (<Cell x={cell.x} y={cell.y} alive={cell.alive} changeState={this.changeState(cell)}/>)
+            })}
+            </tr>)
         }
-            return board;
-        }
+        return array;
+    }
 
     setRows(event) {
         this.setState({rows: event.target.value});
@@ -58,14 +67,6 @@ class Game extends React.Component {
     setColumns(event) {
         this.setState({columns: event.target.value});
     }
-
-    // RenderRows() {
-    //     for(let row=1; row<=this.state.rows; row++) {
-    //         let rowCells = this.state.cells.filter(cell => cell.y === row)
-    //         return <Row rowCells={rowCells} id={row}/>;
-    //     }
-    // }
-
 
     render() {
         return (
