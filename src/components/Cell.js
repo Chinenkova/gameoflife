@@ -6,9 +6,10 @@ class Cell extends React.Component {
     }   
 
     render() {
+        const {changeState, index} = this.props
         return (
-            <td className={`Cell ${this.props.alive ? 'alive' : ''}`} onClick={this.props.changeState} />
+            <td className={`Cell ${this.props.alive ? 'alive' : ''}`} onClick={() => changeState(index, this.props.alive)} />
         );
     }
-    }
+}
 export default Cell;

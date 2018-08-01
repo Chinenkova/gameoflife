@@ -1,6 +1,8 @@
 import React from 'react';
 import './Game.css';
 import Cell from './Cell';
+import update from 'immutability-helper';
+
 class Game extends React.Component {
     constructor() {
         super();
@@ -11,61 +13,71 @@ class Game extends React.Component {
         }
         this.CreateCells = this.CreateCells.bind(this);
         this.changeState = this.changeState.bind(this);
-        this.setRows = this.setRows.bind(this);
-        this.setColumns = this.setColumns.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     componentWillMount() {
-        this.CreateCells();
+        this.CreateCells(); 
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.rows !== prevState.rows || this.state.columns !== prevState.columns) {
+            this.CreateCells(); 
+        }
     }
 
     CreateCells() {
+        let idx=0;
         for (let y = 1; y <= this.state.rows; y++) {
             for (let x = 1; x <= this.state.columns; x++) {
-                let alive = false;
-                this.setState(prevState => ({cells: [...prevState.cells, {x, y, alive}]}));
+                this.setState(prevState => ({cells: [...prevState.cells, {x: x, y: y, alive: false, index: idx++}]}));
             }
         }
     }
 
-    changeState(index) {
-        let cells = {...this.state.cells[index].alive}
-        someProperty.flag = true;
-        this.setState({someProperty})
-        this.setState(prevState => ({
-            cell.alive: !prevState.cells.alive
-        }));
+    changeState(index, value) {
+        let ind=index;
+        let cells = update(this.state.cells, {[ind]: {alive: {$set: !value}}});
+        this.setState({cells: cells}, () => {
+            console.log(this.state.cells); // further value-
+        });
     }
+
+    renderCells() {
+        this.state.cells.map(cell => {
+            return <Cell CreateCells={this.CreateCells} changeState={this.changeState}/> 
+        }
+    }
+    
+    renderRow() {
+        for (let row = 1; row <= this.state.rows; row++) {
+            return <tr>{this.renderCells()}</tr>
+        }
+    }
+
 
     renderBoard = () => {
-        // let board = [];    
-        // for (let row = 1; row <= this.state.rows; row++) {
-        //     let children = [];
-        //     for (let c = 1; c <= this.state.columns; c++) {
-        //         children.push(<Cell x={c} y={row} alive={false} changeState={this.changeState}/>)
-        //     }
-        //     board.push(<tr>{children}</tr>)
-        // }
-        //     return board;
-
-        const array = [];
+        let board = [];        
+        let idx = 0;    
         for (let row = 1; row <= this.state.rows; row++) {
-            let rowCells = this.state.cells.filter(cell => cell.y===row);
-            array.push(<tr>
-            {rowCells.map(cell => {
-                return (<Cell x={cell.x} y={cell.y} alive={cell.alive} changeState={this.changeState(cell)}/>)
-            })}
-            </tr>)
+            let children = [];
+            for (let c = 1; c <= this.state.columns; c++) {
+                children.push(<Cell cells={this.state.cells} x={c} y={row} index={idx++} alive={false} CreateCells={this.CreateCells} changeState={this.changeState}/>)
+            }
+            board.push(<tr>{children}</tr>)
         }
-        return array;
+            return board;
     }
 
-    setRows(event) {
-        this.setState({rows: event.target.value});
-    }
-
-    setColumns(event) {
-        this.setState({columns: event.target.value});
+    handleSubmit (e) {
+        e.preventDefault();
+        this.setState({rows: parseInt(this.inputRows.value)}, function () {
+            console.log(this.state.rows);
+        });
+        this.setState({columns: parseInt(this.inputColumns.value)}, function () {
+            console.log(this.state.columns);
+        });
+        this.setState({ cells: [] });   
     }
 
     render() {
@@ -74,11 +86,12 @@ class Game extends React.Component {
             <table className="Board">
                 {this.renderBoard()}
             </table>
-            <form>
+            <form onSubmit={this.handleSubmit}>
                 <label for="rows">Rows:</label>
-                <input type="text" id="rows" onChange={this.setRows}/>
+                <input type="number" id="rows" ref={el => this.inputRows = el}/>
                 <label for="columns">Columns</label>
-                <input type="text" id="columns" onChange={this.setColumns}/>
+                <input type="number" id="columns" ref={el => this.inputColumns = el}/>
+                <input type="submit" value="Submit" />
             </form>
         </div>
         );
