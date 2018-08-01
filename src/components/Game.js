@@ -14,16 +14,22 @@ class Game extends React.Component {
         this.CreateCells = this.CreateCells.bind(this);
         this.changeState = this.changeState.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.renderCells = this.renderCells.bind(this);
+
+        let cells = this.state.cells;
     }
 
     componentWillMount() {
-        this.CreateCells(); 
+        this.CreateCells();         
     }
 
     componentDidUpdate(prevProps, prevState) {
         if (this.state.rows !== prevState.rows || this.state.columns !== prevState.columns) {
             this.CreateCells(); 
         }
+    }
+    componentDidMount() {
+        this.CreateCells(); 
     }
 
     CreateCells() {
@@ -43,15 +49,28 @@ class Game extends React.Component {
         });
     }
 
-    renderCells() {
-        this.state.cells.map(cell => {
-            return <Cell CreateCells={this.CreateCells} changeState={this.changeState}/> 
+    renderCells = ()  => {
+        let arr =[];
+        let rows = this.state.rows;
+        for (let row = 1; row <= rows; row++) {
+            this.state.cells.map(cell => {
+                if(cell.y === row){
+                    console.log('1');
+                    //arr[row][cell.x].push(<Cell y={cell.y} x={cell.x} index={cell.index} alive={cell.alive} CreateCells={this.CreateCells} changeState={this.changeState}/>);
+                };
+                return arr;
+            }
+            )
         }
+        console.log(arr);
+        return arr;
     }
+
+
     
     renderRow() {
         for (let row = 1; row <= this.state.rows; row++) {
-            return <tr>{this.renderCells()}</tr>
+            return <tr>{() =>this.renderCells()}</tr>
         }
     }
 
@@ -97,4 +116,5 @@ class Game extends React.Component {
         );
     }
     }
+    
 export default Game;
