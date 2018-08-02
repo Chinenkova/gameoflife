@@ -10,6 +10,7 @@ class Game extends React.Component {
             columns: 8,
             rows: 8,
             cells: [],
+            initialCells: [],
         }
         this.CreateCells = this.CreateCells.bind(this);
         this.changeState = this.changeState.bind(this);
@@ -19,10 +20,6 @@ class Game extends React.Component {
         //this.renderCells = this.renderCells.bind(this);
 
         //let cells = this.state.cells;
-    }
-
-    componentWillMount() {
-        this.CreateCells();         
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -43,7 +40,7 @@ class Game extends React.Component {
                 newCells.push({x: x, y: y, alive, index: idx++})
             }
         } 
-        this.setState({cells: newCells});
+        this.setState({cells: newCells, initialCells: newCells});
     }
 
     startGame = () => {
@@ -52,14 +49,9 @@ class Game extends React.Component {
         }, 1000);
     }
 
-    stopGame = () => {
-        clearInterval(this.checkNeighbours());
-        for(let i=0; i<=this.state.cells.length; i++) {
-            let cells = update(this.state.cells, {[i]: {alive: {$set: false}}});
-            this.setState({cells: cells}, () => {
-                console.log(this.state.cells);
-            });
-        }
+    stopGame = (func) => {
+        clearInterval(func);
+        this.setState({cells: this.state.initialCells});
     }
 
     
@@ -144,22 +136,16 @@ class Game extends React.Component {
                 {x: cell.x-1, y: cell.y+1},
                 {x: cell.x-1, y: cell.y},
                 {x: cell.x-1, y: cell.y-1}
-            ];    
-
-
-
-
+            ];
             //find these neighbours in cells
             let targets = [];
             neighbours.map(n => {
                 let target = this.state.cells.filter(el => {
-                    return el.y===n.y && el.x==n.x
+                    return el.y===n.y && el.x===n.x
                 });
                 targets.push(target[0]);
             })
             let target = targets.filter(e => {return e});
-            console.log(target);
-
             //check if they are alive
             let count=0;
             target.map(el => {
@@ -183,7 +169,7 @@ class Game extends React.Component {
         let ind=index;
         let cells = update(this.state.cells, {[ind]: {alive: {$set: !value}}});
         this.setState({cells: cells}, () => {
-            console.log(this.state.cells);
+            console.log('1');
         });
     }
 
@@ -272,7 +258,7 @@ class Game extends React.Component {
             </button>
             <button onClick={() =>this.Pause()}>Pause</button>
             <button onClick={() =>this.Resume()}>Resume</button>
-            <button onClick={() =>this.stopGame()}>Reset</button>
+            <button onClick={() =>this.stopGame(this.checkNeighbours())}>Reset</button>
         </div>
         );
     }
