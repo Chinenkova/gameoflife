@@ -153,15 +153,23 @@ class Game extends React.Component {
             })
             
             //change state of a cell
-            if (count === 3 && !cell.alive) {
-                let cells = update(this.state.cells, {[cell.index]: {alive: {$set: true}}});
-                this.setState({cells: cells}, () => {
-                });
-            } else if (count < 2 || count > 3) {
-                let cells = update(this.state.cells, {[cell.index]: {alive: {$set: false}}});
-                this.setState({cells: cells}, () => {
-                });
-            }
+            if(cell.alive) {
+                if (count === 3 || count === 2) {
+                    let cells = update(this.state.cells, {[cell.index]: {alive: {$set: true}}});
+                    this.setState({cells: cells}, () => {
+                    });                    
+                } else {
+                    let cells = update(this.state.cells, {[cell.index]: {alive: {$set: false}}});
+                    this.setState({cells: cells}, () => {
+                    });
+                }
+            } else if (!cell.alive) {
+                if(count===3) {
+                    let cells = update(this.state.cells, {[cell.index]: {alive: {$set: true}}});
+                    this.setState({cells: cells}, () => {
+                    });
+                }
+            }    
         })
     }
 
