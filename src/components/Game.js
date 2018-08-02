@@ -14,9 +14,9 @@ class Game extends React.Component {
         this.CreateCells = this.CreateCells.bind(this);
         this.changeState = this.changeState.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.renderCells = this.renderCells.bind(this);
+        //this.renderCells = this.renderCells.bind(this);
 
-        let cells = this.state.cells;
+        //let cells = this.state.cells;
     }
 
     componentWillMount() {
@@ -33,12 +33,15 @@ class Game extends React.Component {
     }
 
     CreateCells() {
+        const newCells = []
         let idx=0;
         for (let y = 1; y <= this.state.rows; y++) {
             for (let x = 1; x <= this.state.columns; x++) {
-                this.setState(prevState => ({cells: [...prevState.cells, {x: x, y: y, alive: false, index: idx++}]}));
+                let alive = false
+                newCells.push({x: x, y: y, alive, index: idx++})
             }
-        }
+        } 
+        this.setState({cells: newCells});
     }
 
     changeState(index, value) {
@@ -49,44 +52,49 @@ class Game extends React.Component {
         });
     }
 
-    renderCells = ()  => {
-        let arr =[];
-        let rows = this.state.rows;
-        for (let row = 1; row <= rows; row++) {
-            this.state.cells.map(cell => {
-                if(cell.y === row){
-                    console.log('1');
-                    //arr[row][cell.x].push(<Cell y={cell.y} x={cell.x} index={cell.index} alive={cell.alive} CreateCells={this.CreateCells} changeState={this.changeState}/>);
-                };
-                return arr;
-            }
-            )
-        }
-        console.log(arr);
-        return arr;
-    }
+    // renderCells = ()  => {
+        // let arr =[];
+        // let rows = this.state.rows;
+        // let c = this.state.cells;
+        // for (let row = 1; row <= rows; row++) {
+        //     c.map(cell => {
+        //         if(cell.y === row){
+        //             arr[row][cell.x].push(<Cell y={cell.y} x={cell.x} index={cell.index} alive={cell.alive} CreateCells={this.CreateCells} changeState={this.changeState}/>);
+        //         };
+        //         return arr;
+        //     }
+        //     )
+        // }
+        // console.log(arr);
+        // return arr;
+    //     let rowsArr = [];
+    //     for (var i = 0; i < this.state.rows; i++) {
+	// 		for (var j = 0; j < this.state.columns; j++) {
+    //             let index = i + ' ' + j;
+	// 			rowsArr.push(
+	// 				<Cell
+    //                     y={i}
+	// 					x={j}
+	// 					index={index}
+	// 				/>
+	// 			);
+	// 		}
+    //     }
+    //     return rowsArr;
+    // }
 
-
-    
-    renderRow() {
-        for (let row = 1; row <= this.state.rows; row++) {
-            return <tr>{() =>this.renderCells()}</tr>
-        }
-    }
-
-
-    renderBoard = () => {
-        let board = [];        
-        let idx = 0;    
-        for (let row = 1; row <= this.state.rows; row++) {
-            let children = [];
-            for (let c = 1; c <= this.state.columns; c++) {
-                children.push(<Cell cells={this.state.cells} x={c} y={row} index={idx++} alive={false} CreateCells={this.CreateCells} changeState={this.changeState}/>)
-            }
-            board.push(<tr>{children}</tr>)
-        }
-            return board;
-    }
+    // renderBoard = () => {
+    //     let board = [];        
+    //     let idx = 0;    
+    //     for (let row = 1; row <= this.state.rows; row++) {
+    //         let children = [];
+    //         for (let c = 1; c <= this.state.columns; c++) {
+    //             children.push(<Cell cells={this.state.cells} x={c} y={row} index={idx++} alive={false} CreateCells={this.CreateCells} changeState={this.changeState}/>)
+    //         }
+    //         board.push(<tr>{children}</tr>)
+    //     }
+    //         return board;
+    // }
 
     handleSubmit (e) {
         e.preventDefault();
@@ -100,11 +108,23 @@ class Game extends React.Component {
     }
 
     render() {
+        const style = {
+            display: 'grid',
+            gridTemplateRows: `repeat(${this.state.rows}, 20px)`,
+            gridTemplateColumns: `repeat(${this.state.columns}, 20px)`,
+        }
+
+        let rowsArr =[];
+        this.state.cells.map(cell => {
+            rowsArr.push(<Cell cells={this.state.cells} x={cell.x} y={cell.y} index={cell.index} alive={cell.alive} changeState={this.changeState}/>);
+
+        })
+
         return (
         <div>
-            <table className="Board">
-                {this.renderBoard()}
-            </table>
+            <div className="Board" style={style}>
+                {rowsArr}
+            </div>
             <form onSubmit={this.handleSubmit}>
                 <label for="rows">Rows:</label>
                 <input type="number" id="rows" ref={el => this.inputRows = el}/>
