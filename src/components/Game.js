@@ -14,6 +14,8 @@ class Game extends React.Component {
         this.CreateCells = this.CreateCells.bind(this);
         this.changeState = this.changeState.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.checkNeighbours = this.checkNeighbours.bind(this);
+        
         //this.renderCells = this.renderCells.bind(this);
 
         //let cells = this.state.cells;
@@ -44,79 +46,137 @@ class Game extends React.Component {
         this.setState({cells: newCells});
     }
 
+    startGame = () => {
+        setInterval(() => {
+            this.checkNeighbours();
+        }, 1000);
+    }
+
+    stopGame = () => {
+        clearInterval(this.checkNeighbours());
+        for(let i=0; i<=this.state.cells.length; i++) {
+            let cells = update(this.state.cells, {[i]: {alive: {$set: false}}});
+            this.setState({cells: cells}, () => {
+                console.log(this.state.cells);
+            });
+        }
+    }
+
+    
     checkNeighbours = () => {
-        let neighbours = [];
+        // let neighbours = [];        
         this.state.cells.map(cell => {
-            if(cell.x === 1 && cell.y === 1) {
-                neighbours = [
-                    {x: cell.x+1, y: cell.y},
-                    {x: cell.x+1, y: cell.y+1},
-                    {x: cell.x, y: cell.y+1}
-                ]
-            } else if(cell.x === this.columns.length && cell.y === 1) {
-                neighbours = [
-                    {x: cell.x-1, y: cell.y},
-                    {x: cell.x-1, y: cell.y+1},
-                    {x: cell.x, y: cell.y+1}
-                ]
-            } else if(cell.x === this.columns.length && cell.y === this.rows.length) {
-                neighbours = [
-                    {x: cell.x, y: cell.y-1},
-                    {x: cell.x-1, y: cell.y-1},
-                    {x: cell.x-1, y: cell.y}
-                ]
-            } else if(cell.x === 1 && cell.y === this.rows.length) {
-                neighbours = [
-                    {x: cell.x, y: cell.y-1},
-                    {x: cell.x+1, y: cell.y+1},
-                    {x: cell.x+1, y: cell.y}
-                ]
-            } else if(cell.x===1) {
-                neighbours = [
-                    {x: cell.x, y: cell.y-1},
-                    {x: cell.x+1, y: cell.y-1},
-                    {x: cell.x+1, y: cell.y},
-                    {x: cell.x+1, y: cell.y+1},
-                    {x: cell.x, y: cell.y+1}
-                ]
-            } else if(cell.x===this.columns.length) {
-                neighbours = [
-                    {x: cell.x, y: cell.y-1},
-                    {x: cell.x-1, y: cell.y-1},
-                    {x: cell.x-1, y: cell.y},
-                    {x: cell.x-1, y: cell.y+1},
-                    {x: cell.x, y: cell.y+1}
-                ]
-            } else if(cell.y===1) {
-                neighbours = [
-                    {x: cell.x-1, y: cell.y},
-                    {x: cell.x-1, y: cell.y+1},
-                    {x: cell.x, y: cell.y+1},
-                    {x: cell.x+1, y: cell.y+1},
-                    {x: cell.x+1, y: cell.y}
-                ]
-            } else if(cell.y===this.rows.length) {
-                neighbours = [
-                    {x: cell.x-1, y: cell.y},
-                    {x: cell.x-1, y: cell.y-1},
-                    {x: cell.x, y: cell.y-1},
-                    {x: cell.x+1, y: cell.y-1},
-                    {x: cell.x+1, y: cell.y}
-                ]
-            } else {
-                neighbours = [
-                    {x: cell.x, y: cell.y-1},
-                    {x: cell.x+1, y: cell.y-1},
-                    {x: cell.x+1, y: cell.y},
-                    {x: cell.x+1, y: cell.y+1},
-                    {x: cell.x, y: cell.y+1},
-                    {x: cell.x-1, y: cell.y-1},
-                    {x: cell.x-1, y: cell.y},
-                    {x: cell.x+1, y: cell.y-1}
-                ]
+            // if(cell.x === 1 && cell.y === 1) {
+            //     neighbours = [
+            //         {x: cell.x+1, y: cell.y},
+            //         {x: cell.x+1, y: cell.y+1},
+            //         {x: cell.x, y: cell.y+1}
+            //     ]
+            // } else if(cell.x === this.state.columns.length && cell.y === 1) {
+            //     neighbours = [
+            //         {x: cell.x-1, y: cell.y},
+            //         {x: cell.x-1, y: cell.y+1},
+            //         {x: cell.x, y: cell.y+1}
+            //     ]
+            // } else if(cell.x === this.state.columns.length && cell.y === this.state.rows.length) {
+            //     neighbours = [
+            //         {x: cell.x, y: cell.y-1},
+            //         {x: cell.x-1, y: cell.y-1},
+            //         {x: cell.x-1, y: cell.y}
+            //     ]
+            // } else if(cell.x === 1 && cell.y === this.state.rows.length) {
+            //     neighbours = [
+            //         {x: cell.x, y: cell.y-1},
+            //         {x: cell.x+1, y: cell.y+1},
+            //         {x: cell.x+1, y: cell.y}
+            //     ]
+            // } else if(cell.x===1) {
+            //     neighbours = [
+            //         {x: cell.x, y: cell.y-1},
+            //         {x: cell.x+1, y: cell.y-1},
+            //         {x: cell.x+1, y: cell.y},
+            //         {x: cell.x+1, y: cell.y+1},
+            //         {x: cell.x, y: cell.y+1}
+            //     ]
+            // } else if(cell.x===this.state.columns.length) {
+            //     neighbours = [
+            //         {x: cell.x, y: cell.y-1},
+            //         {x: cell.x-1, y: cell.y-1},
+            //         {x: cell.x-1, y: cell.y},
+            //         {x: cell.x-1, y: cell.y+1},
+            //         {x: cell.x, y: cell.y+1}
+            //     ]
+            // } else if(cell.y===1) {
+            //     neighbours = [
+            //         {x: cell.x-1, y: cell.y},
+            //         {x: cell.x-1, y: cell.y+1},
+            //         {x: cell.x, y: cell.y+1},
+            //         {x: cell.x+1, y: cell.y+1},
+            //         {x: cell.x+1, y: cell.y}
+            //     ]
+            // } else if(cell.y===this.state.rows.length) {
+            //     neighbours = [
+            //         {x: cell.x-1, y: cell.y},
+            //         {x: cell.x-1, y: cell.y-1},
+            //         {x: cell.x, y: cell.y-1},
+            //         {x: cell.x+1, y: cell.y-1},
+            //         {x: cell.x+1, y: cell.y}
+            //     ]
+            // } else {
+            //     neighbours = [
+            //         {x: cell.x, y: cell.y-1},
+            //         {x: cell.x+1, y: cell.y-1},
+            //         {x: cell.x+1, y: cell.y},
+            //         {x: cell.x+1, y: cell.y+1},
+            //         {x: cell.x, y: cell.y+1},
+            //         {x: cell.x-1, y: cell.y-1},
+            //         {x: cell.x-1, y: cell.y},
+            //         {x: cell.x+1, y: cell.y-1}
+            //     ]
+            // }
+
+            let neighbours = [
+                {x: cell.x, y: cell.y-1},
+                {x: cell.x+1, y: cell.y-1},
+                {x: cell.x+1, y: cell.y},
+                {x: cell.x+1, y: cell.y+1},
+                {x: cell.x, y: cell.y+1},
+                {x: cell.x-1, y: cell.y+1},
+                {x: cell.x-1, y: cell.y},
+                {x: cell.x-1, y: cell.y-1}
+            ];    
+
+
+
+
+            //find these neighbours in cells
+            let targets = [];
+            neighbours.map(n => {
+                let target = this.state.cells.filter(el => {
+                    return el.y===n.y && el.x==n.x
+                });
+                targets.push(target[0]);
+            })
+            let target = targets.filter(e => {return e});
+            console.log(target);
+
+            //check if they are alive
+            let count=0;
+            target.map(el => {
+                if (el.alive) count++;
+            })
+            
+            //change state of a cell
+            if (count === 3 && !cell.alive) {
+                let cells = update(this.state.cells, {[cell.index]: {alive: {$set: true}}});
+                this.setState({cells: cells}, () => {
+                });
+            } else if (count < 2 || count > 3) {
+                let cells = update(this.state.cells, {[cell.index]: {alive: {$set: false}}});
+                this.setState({cells: cells}, () => {
+                });
             }
         })
-
     }
 
     changeState(index, value) {
@@ -207,10 +267,12 @@ class Game extends React.Component {
                 <input type="number" id="columns" ref={el => this.inputColumns = el}/>
                 <input type="submit" value="Submit" />
             </form>
-            <button onClick={() =>this.checkNeighbours()}>Start</button>
+            <button onClick={() => this.startGame()}>
+                Start
+            </button>
             <button onClick={() =>this.Pause()}>Pause</button>
             <button onClick={() =>this.Resume()}>Resume</button>
-            <button onClick={() =>this.Reset()}>Reset</button>
+            <button onClick={() =>this.stopGame()}>Reset</button>
         </div>
         );
     }
