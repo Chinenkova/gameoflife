@@ -44,11 +44,86 @@ class Game extends React.Component {
         this.setState({cells: newCells});
     }
 
+    checkNeighbours = () => {
+        let neighbours = [];
+        this.state.cells.map(cell => {
+            if(cell.x === 1 && cell.y === 1) {
+                neighbours = [
+                    {x: cell.x+1, y: cell.y},
+                    {x: cell.x+1, y: cell.y+1},
+                    {x: cell.x, y: cell.y+1}
+                ]
+            } else if(cell.x === this.columns.length && cell.y === 1) {
+                neighbours = [
+                    {x: cell.x-1, y: cell.y},
+                    {x: cell.x-1, y: cell.y+1},
+                    {x: cell.x, y: cell.y+1}
+                ]
+            } else if(cell.x === this.columns.length && cell.y === this.rows.length) {
+                neighbours = [
+                    {x: cell.x, y: cell.y-1},
+                    {x: cell.x-1, y: cell.y-1},
+                    {x: cell.x-1, y: cell.y}
+                ]
+            } else if(cell.x === 1 && cell.y === this.rows.length) {
+                neighbours = [
+                    {x: cell.x, y: cell.y-1},
+                    {x: cell.x+1, y: cell.y+1},
+                    {x: cell.x+1, y: cell.y}
+                ]
+            } else if(cell.x===1) {
+                neighbours = [
+                    {x: cell.x, y: cell.y-1},
+                    {x: cell.x+1, y: cell.y-1},
+                    {x: cell.x+1, y: cell.y},
+                    {x: cell.x+1, y: cell.y+1},
+                    {x: cell.x, y: cell.y+1}
+                ]
+            } else if(cell.x===this.columns.length) {
+                neighbours = [
+                    {x: cell.x, y: cell.y-1},
+                    {x: cell.x-1, y: cell.y-1},
+                    {x: cell.x-1, y: cell.y},
+                    {x: cell.x-1, y: cell.y+1},
+                    {x: cell.x, y: cell.y+1}
+                ]
+            } else if(cell.y===1) {
+                neighbours = [
+                    {x: cell.x-1, y: cell.y},
+                    {x: cell.x-1, y: cell.y+1},
+                    {x: cell.x, y: cell.y+1},
+                    {x: cell.x+1, y: cell.y+1},
+                    {x: cell.x+1, y: cell.y}
+                ]
+            } else if(cell.y===this.rows.length) {
+                neighbours = [
+                    {x: cell.x-1, y: cell.y},
+                    {x: cell.x-1, y: cell.y-1},
+                    {x: cell.x, y: cell.y-1},
+                    {x: cell.x+1, y: cell.y-1},
+                    {x: cell.x+1, y: cell.y}
+                ]
+            } else {
+                neighbours = [
+                    {x: cell.x, y: cell.y-1},
+                    {x: cell.x+1, y: cell.y-1},
+                    {x: cell.x+1, y: cell.y},
+                    {x: cell.x+1, y: cell.y+1},
+                    {x: cell.x, y: cell.y+1},
+                    {x: cell.x-1, y: cell.y-1},
+                    {x: cell.x-1, y: cell.y},
+                    {x: cell.x+1, y: cell.y-1}
+                ]
+            }
+        })
+
+    }
+
     changeState(index, value) {
         let ind=index;
         let cells = update(this.state.cells, {[ind]: {alive: {$set: !value}}});
         this.setState({cells: cells}, () => {
-            console.log(this.state.cells); // further value-
+            console.log(this.state.cells);
         });
     }
 
@@ -132,6 +207,10 @@ class Game extends React.Component {
                 <input type="number" id="columns" ref={el => this.inputColumns = el}/>
                 <input type="submit" value="Submit" />
             </form>
+            <button onClick={() =>this.checkNeighbours()}>Start</button>
+            <button onClick={() =>this.Pause()}>Pause</button>
+            <button onClick={() =>this.Resume()}>Resume</button>
+            <button onClick={() =>this.Reset()}>Reset</button>
         </div>
         );
     }
