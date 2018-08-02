@@ -44,13 +44,13 @@ class Game extends React.Component {
     }
 
     startGame = () => {
-        setInterval(() => {
+        setTimeout(() => {
             this.checkNeighbours();
-        }, 1000);
+        }, 500);
     }
 
-    stopGame = (func) => {
-        clearInterval(func);
+    stopGame = () => {
+        clearTimeout(this.startGame());
         this.setState({cells: this.state.initialCells});
     }
 
