@@ -28,7 +28,13 @@ class Game extends React.Component {
         }
     }
     componentDidMount() {
-        this.CreateCells(); 
+        this.CreateCells();
+        let intervalId = setInterval(this.checkNeighbours, 1000)
+        this.setState({ startGame: intervalId }) 
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.state.startGame);
     }
 
     CreateCells() {
@@ -43,16 +49,16 @@ class Game extends React.Component {
         this.setState({cells: newCells, initialCells: newCells});
     }
 
-    startGame = () => {
-        setTimeout(() => {
-            this.checkNeighbours();
-        }, 500);
-    }
+    // startGame = () => {
+    //     return setInterval(() => {
+    //         this.checkNeighbours();
+    //     }, 500);
+    // }
 
-    stopGame = () => {
-        clearTimeout(this.startGame());
-        this.setState({cells: this.state.initialCells});
-    }
+    // stopGame = () => {
+    //     return clearInterval(() => this.startGame());
+    //     //this.setState({cells: this.state.initialCells});
+    // }
 
     
     checkNeighbours = () => {
@@ -145,11 +151,15 @@ class Game extends React.Component {
                 });
                 targets.push(target[0]);
             })
-            let target = targets.filter(e => {return e});
+            let targetNeighbours = targets.filter(e => {return e});
             //check if they are alive
             let count=0;
-            target.map(el => {
-                if (el.alive) count++;
+            targetNeighbours.map(el => {
+                if (el.alive) {
+                    count++;
+                    console.log(count);
+                    console.log(el);
+                };
             })
             
             //change state of a cell
@@ -261,12 +271,17 @@ class Game extends React.Component {
                 <input type="number" id="columns" ref={el => this.inputColumns = el}/>
                 <input type="submit" value="Submit" />
             </form>
-            <button onClick={() => this.startGame()}>
+            <button onClick={() => this.state.startGame}>
                 Start
             </button>
             <button onClick={() =>this.Pause()}>Pause</button>
             <button onClick={() =>this.Resume()}>Resume</button>
-            <button onClick={() =>this.stopGame(this.checkNeighbours())}>Reset</button>
+            <button onClick={() => {
+                clearInterval(this.state.startGame); 
+                this.setState({cells: this.state.initialCells});
+            }}>
+                Reset
+            </button>
         </div>
         );
     }
