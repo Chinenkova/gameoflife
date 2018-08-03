@@ -69,10 +69,12 @@ class Game extends React.Component {
     }
 
     CreateCells() {
+        const newCells = []
         let idx=0;
         for (let y = 1; y <= this.state.rows; y++) {
             for (let x = 1; x <= this.state.columns; x++) {
-                this.setState(prevState => ({cells: [...prevState.cells, {x: x, y: y, alive: false, index: idx++}]}));
+                let alive = false
+                newCells.push({x: x, y: y, alive, index: idx++})
             }
         } 
         this.setState({cells: newCells, initialCells: newCells});
@@ -153,7 +155,7 @@ class Game extends React.Component {
         let ind=index;
         let cells = update(this.state.cells, {[ind]: {alive: {$set: !value}}});
         this.setState({cells: cells}, () => {
-            console.log(this.state.cells); // further value-
+            console.log('1');
         });
     }
 
@@ -169,6 +171,18 @@ class Game extends React.Component {
     }
 
     render() {
+        const style = {
+            display: 'grid',
+            gridTemplateRows: `repeat(${this.state.rows}, 20px)`,
+            gridTemplateColumns: `repeat(${this.state.columns}, 20px)`,
+        }
+
+        let rowsArr =[];
+        this.state.cells.map(cell => {
+            rowsArr.push(<Cell cells={this.state.cells} x={cell.x} y={cell.y} index={cell.index} alive={cell.alive} changeState={this.changeState}/>);
+
+        })
+
         return (
             <div className="wrap">
                 <div className="Board" style={style}>
