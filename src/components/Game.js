@@ -167,7 +167,7 @@ class Game extends React.Component {
         this.setState({columns: parseInt(this.inputColumns.value)}, function () {
             console.log(this.state.columns);
         });
-        this.setState({ cells: [] });   
+        this.setState({ cells: [] });
     }
 
     render() {
@@ -185,14 +185,15 @@ class Game extends React.Component {
 
         return (
             <div className="wrap">
+                <h1>Conway's Game of Life</h1>
                 <div className="Board" style={style}>
                     {rowsArr}
                 </div>
                 <form onSubmit={this.handleSubmit}>
                     <label for="rows">Rows:</label>
-                    <input type="number" id="rows" ref={el => this.inputRows = el}/>
+                    <input type="number" id="rows" ref={el => this.inputRows = el} required/>
                     <label for="columns">Columns:</label>
-                    <input type="number" id="columns" ref={el => this.inputColumns = el}/>
+                    <input type="number" id="columns" ref={el => this.inputColumns = el} required/>
                     <input type="submit" value="Submit" className="submit"/>
                 </form>
                 <div className="buttons_group">
